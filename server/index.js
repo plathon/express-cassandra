@@ -4,6 +4,7 @@ import bodyParser from 'body-parser'
 import helmet from 'helmet'
 import morgan from 'morgan'
 
+import passport from './config/passport'
 import './config/environment'
 import'./database/mongodb'
 
@@ -19,6 +20,7 @@ app.use(helmet())
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json({ limit : '100kb' }))
 app.use(morgan('combined'))
+app.use(passport.initialize());
 
 // internal middleware
 app.use(middleware())

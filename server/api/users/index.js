@@ -24,6 +24,16 @@ export default {
 				})
 			})
 		})
+	},
+
+	/**
+	* description: authenticate user
+	* @param {string} email - user email
+	* @param {string} password - user password
+	**/
+
+	auth: (req, res) => {
+		console.log(req.user)
 	}
 
 }
