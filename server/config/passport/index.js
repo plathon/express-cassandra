@@ -1,6 +1,6 @@
 import passport from 'passport'
-import localStrategy from './strategies'
+import strategies from './strategies'
 
-var passportConfig = localStrategy(passport)
+var passportConfig = strategies(passport)
 
 export default passportConfig

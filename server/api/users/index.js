@@ -13,12 +13,12 @@ export default {
 		var params = req.body
 		UserModel.findOne({ email: params.email }, (err, user) => {
 			if (err) return res.status(401).send(err)
-			if (user) return res.status(403).send({ msg: 'User already exists.' })
+			if (user) return res.status(403).send({ message: 'User already exists.' })
 
 			UserModel.create(params, (err, user) => {
 				if (err) return res.status(500).send(err)
 
-				user.generateJWT(user, (err, token) => {
+				user.generateJWT((err, token) => {
 					if (err) return res.status(500).send(err)
 					res.send({ token: token })
 				})
@@ -26,14 +26,8 @@ export default {
 		})
 	},
 
-	/**
-	* description: authenticate user
-	* @param {string} email - user email
-	* @param {string} password - user password
-	**/
-
-	auth: (req, res) => {
-		console.log(req.user)
+	list: (req, res) => {
+		res.send('right')
 	}
 
 }

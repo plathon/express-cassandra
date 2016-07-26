@@ -1,7 +1,7 @@
-import localStrategy from 'passport-local'
-import UserModel from '../../models/user/mongodb/model'
+import { Strategy as LocalStrategy } from 'passport-local'
+import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt'
 
-var LocalStrategy = localStrategy.Strategy
+import UserModel from '../../models/user/mongodb/model'
 
 export default (passport) => {
 
@@ -19,10 +19,25 @@ export default (passport) => {
 		     	if (err) return done(err)
 		      	if (!user) return done(null, false)
 		      	if (!user.comparePassword(password)) return done(null, false)
-		      	console.log(user)
 		      	return done(null, user)
 	    })
 	  }
+	))
+
+	/**
+	* passport JWTStrategy
+	**/
+
+	passport.use(new JwtStrategy({
+		jwtFromRequest: ExtractJwt.fromAuthHeader(),
+		secretOrKey: process.env.APP_SECRET
+	}, (payload, done) => {
+			UserModel.findOne({ _id: payload._id }, (err, user) => {
+				if (err) return done(err)
+		      	if (!user) return done(null, false)
+		      	return done(null, user)
+			})
+		}
 	))
 
 	/**

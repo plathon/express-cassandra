@@ -59,8 +59,8 @@ UserSchema.methods.comparePassword = function (password) {
 * Generate JWT
 **/
 
-UserSchema.methods.generateJWT = (user, cb) => {
-  let userData = { _id: user._id, name: user.name, email: user.email }
+UserSchema.methods.generateJWT = function (cb) {
+  let userData = { _id: this._id, name: this.name, email: this.email }
   jwt.sign(userData, process.env.APP_SECRET, { expiresIn: 172800000 }, cb)
 }
 
