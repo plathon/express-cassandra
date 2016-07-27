@@ -12,7 +12,11 @@ export default () => {
 	routes.get('/users', passport.authenticate('jwt', { session: false }), users.list)
 
 	//authetication
-	routes.post('/users/auth', passport.authenticate('local'), authentication.authenticate)
-	
+	routes.post('/auth/auth', passport.authenticate('local'), authentication.authenticate)
+	routes.get('/auth/facebook', passport.authenticate('facebook', { scope:['email'] }))
+	routes.get('/auth/facebook/callback', passport.authenticate('facebook', { failureRedirect: '/login' }), authentication.facebook)
+	routes.get('/auth/twitter', passport.authenticate('twitter', {session: false}))
+	routes.get('/auth/twitter/callback', passport.authenticate('twitter', { failureRedirect: '/login' }), authentication.twitter)
+
 	return routes
 }

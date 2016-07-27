@@ -18,6 +18,7 @@ var UserSchema = new Schema({
   },
   email: {
     type: String,
+    required: true,
     trim: true,
     lowercase: true,
     minlength: [ 4, 'Very short email' ],
