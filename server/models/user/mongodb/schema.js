@@ -1,6 +1,7 @@
 import mongoose   from 'mongoose'
 import timestamps from 'mongoose-timestamp'
 import bcrypt     from 'bcrypt'
+import slug       from 'mongoose-slug'
 import jwt        from 'jsonwebtoken'
 
 var Schema = mongoose.Schema
@@ -19,6 +20,7 @@ var UserSchema = new Schema({
   email: {
     type: String,
     required: true,
+    unique: true,
     trim: true,
     lowercase: true,
     minlength: [ 4, 'Very short email' ],
@@ -28,7 +30,9 @@ var UserSchema = new Schema({
     type: String,
     minlength: [ 3, 'Very short password' ],
     maxlength: [ 64, 'Very long password' ]
-  }
+  },
+  facebook: { type: String },
+  google: { type: String }
 })
 
 /**
@@ -66,10 +70,16 @@ UserSchema.methods.generateJWT = function (cb) {
 }
 
 /**
-* Timestamps plugin
+* Timestamps plugin to mongoose
 **/
 
 UserSchema.plugin(timestamps)
+
+/**
+* slug plugin to mongoose
+**/
+
+UserSchema.plugin( slug('name') )
 
 /**
 * Export schema

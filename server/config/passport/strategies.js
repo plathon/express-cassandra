@@ -1,6 +1,7 @@
 import { Strategy as LocalStrategy } from 'passport-local'
 import { Strategy as FacebookStrategy } from 'passport-facebook'
-import { Strategy as TwitterStrategy } from 'passport-twitter'
+import { Strategy as GoogleStrategy } from 'passport-google-oauth20'
+import { Strategy as OAuth2Strategy } from 'passport-oauth2'
 import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt'
 
 import UserModel from '../../models/user/mongodb/model'
@@ -50,24 +51,21 @@ export default (passport) => {
 	    callbackURL: process.env.FACEBOOK_CALLBACK,
 	    profileFields: ['id', 'email', 'gender', 'link', 'locale', 'name', 'timezone', 'updated_time', 'verified']
 	}, (accessToken, refreshToken, profile, cb) => {
-	      return cb(null, profile)
+	    	return cb(null, profile)
 	  	}
 	))
 
 	/**
-	* passport TwitterStrategy
+	* passport GoogleStrategy
 	**/
 
-	passport.use(new TwitterStrategy({
-	    consumerKey:  process.env.TWITTER_KEY,
-	    consumerSecret:  process.env.TWITTER_SECRET,
-	    callbackURL: process.env.TWITTER_CALLBACK,
-	    includeEmail: true
+	passport.use(new GoogleStrategy({
+	    clientID: process.env.GOOGLE_CLIENT_ID,
+	    clientSecret: process.env.GOOGLE_SECRET,
+	    callbackURL: process.env.GOOGLE_CALLBACK
 	 }, (token, tokenSecret, profile, cb) => {
-	    User.findOrCreate({ twitterId: profile.id }, (err, user) => {
-		      return cb(err, user);
-		    })
-	  	}
+	    	return cb(null, profile)
+		}
 	))
 
 	/**

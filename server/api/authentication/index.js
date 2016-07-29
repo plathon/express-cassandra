@@ -22,28 +22,31 @@ export default {
 
 	facebook: (req, res) => {
 
-		let params 	 = req.user
-		let fullName = `${params.name.givenName} ${params.name.familyName}`
-		let email 	 = params.emails[0].value
+		let params 	   = req.user
+		let facebookId = params.id
+		let email 	   = params.emails[0].value
+		let fullName   = `${params.name.givenName} ${params.name.familyName}`
 
 		UserModel.findOne({ email: email }, (err, user) => {
 			if (err) return res.status(401).send(err)
-
 			//User already exists
 			if (user) {
+
 				user.generateJWT((err, token) => {
 					if (err) return res.status(500).send(err)
-					res.send({ toke: token })
+					res.send({ token: token })
 				})
+
 			} else {
 				//or create a new user
 				UserModel.create({
 					name: fullName,
-					email: email
+					email: email,
+					facebook: facebookId
 				}, (err, user) => {
 					if (err) return res.status(500).send(err)
-
 					user.generateJWT((err, token) => {
+						if (err) return res.status(500).send(err)
 						res.send({ token: token })
 					})
 				})
@@ -53,11 +56,40 @@ export default {
 	},
 
 	/**
-	* description: twitter oauth
+	* description: google oauth 2.0
 	**/
 
-	twitter: (req, res) => {
-		let params = req.user
-		res.send(params)
+	google: (req, res) => {
+		let params 	 = req.user
+		let googleId = params.id
+		let email    = params.emails[0].value
+		let fullName = params.displayName
+
+		UserModel.findOne({ email: email }, (err, user) => {
+			if (err) return res.status(401).send(err)
+			//User already exists
+			if (user) {
+
+				user.generateJWT((err, token) => {
+					if (err) return res.status(500).send(err)
+					res.send({ token: token })
+				})
+
+			} else {
+				//create a new user
+				UserModel.create({
+					name: fullName,
+					email: email,
+					google: googleId
+				}, (err, user) => {
+					if (err) return res.status(500).send(err)
+					user.generateJWT((err, token) => {
+						if (err) return res.status(500).send(err)
+						res.send({ token: token })
+					})
+				})
+			}
+		})
 	}
+
 }

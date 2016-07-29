@@ -13,10 +13,12 @@ export default () => {
 
 	//authetication
 	routes.post('/auth/auth', passport.authenticate('local'), authentication.authenticate)
+	//facebook oAuth 2.0
 	routes.get('/auth/facebook', passport.authenticate('facebook', { scope:['email'] }))
 	routes.get('/auth/facebook/callback', passport.authenticate('facebook', { failureRedirect: '/login' }), authentication.facebook)
-	routes.get('/auth/twitter', passport.authenticate('twitter', {session: false}))
-	routes.get('/auth/twitter/callback', passport.authenticate('twitter', { failureRedirect: '/login' }), authentication.twitter)
+	//google oAuth 2.0
+	routes.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }))
+	routes.get('/auth/google/callback', passport.authenticate('google', { failureRedirect: '/login' }), authentication.google)
 
 	return routes
 }
