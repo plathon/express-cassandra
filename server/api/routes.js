@@ -10,15 +10,14 @@ export default () => {
 	//users
 	routes.post('/users', users.create)
 	routes.get('/users', passport.authenticate('jwt', { session: false }), users.list)
-
 	//authetication
 	routes.post('/auth/auth', passport.authenticate('local'), authentication.authenticate)
 	//facebook oAuth 2.0
 	routes.get('/auth/facebook', passport.authenticate('facebook', { scope:['email'] }))
-	routes.get('/auth/facebook/callback', passport.authenticate('facebook', { failureRedirect: '/login' }), authentication.facebook)
+	routes.get('/auth/facebook/callback', passport.authenticate('facebook'), authentication.facebook)
 	//google oAuth 2.0
 	routes.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }))
-	routes.get('/auth/google/callback', passport.authenticate('google', { failureRedirect: '/login' }), authentication.google)
+	routes.get('/auth/google/callback', passport.authenticate('google'), authentication.google)
 
 	return routes
 }

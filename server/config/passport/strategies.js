@@ -1,7 +1,6 @@
 import { Strategy as LocalStrategy } from 'passport-local'
 import { Strategy as FacebookStrategy } from 'passport-facebook'
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20'
-import { Strategy as OAuth2Strategy } from 'passport-oauth2'
 import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt'
 
 import UserModel from '../../models/user/mongodb/model'
