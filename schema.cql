@@ -1,0 +1,18 @@
+CREATE table users (
+	id uuid PRIMARY KEY,
+	slug text,
+	name text,
+	email text,
+	password text,
+	created_at timestamp,
+	updated_at timestamp,
+	facebook text,
+	twitter text,
+	google text,
+	status int
+);
+CREATE INDEX ON users (slug);
+CREATE INDEX ON users (email);
+CREATE INDEX ON users (facebook);
+CREATE INDEX ON users (twitter);
+CREATE INDEX ON users (google);

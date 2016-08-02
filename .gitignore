@@ -13,6 +13,7 @@ results
 _dev
 bower_components
 
+migrate.json
 npm-debug.log
 node_modules
 server_old

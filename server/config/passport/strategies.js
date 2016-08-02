@@ -3,7 +3,9 @@ import { Strategy as FacebookStrategy } from 'passport-facebook'
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20'
 import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt'
 
-import UserModel from '../../models/user/mongodb/model'
+import { comparePassword } from '../../models/user/cassandra/helpers/password'
+import Cassandra from '../../database/cassandra'
+import async from 'async'
 
 export default (passport) => {
 
@@ -15,12 +17,43 @@ export default (passport) => {
 		usernameField: 'email',
 		session: false
 	}, (email, password, done) => {
-	    	UserModel.findOne({ email: email }, (err, user) => {
-		     	if (err) return done(err)
-		      	if (!user) return done(null, false)
-		      	if (!user.comparePassword(password)) return done(null, false)
-		      	return done(null, user)
-	    	})
+
+			async.waterfall([
+
+				/**
+				* check user exists and get user (email, password) by email
+				**/
+
+				function (callback) {
+					let query = 'SELECT * FROM users WHERE email = ? LIMIT 1'
+					Cassandra.execute(query, [ email ], [], (err, res) => {
+						if (err) return callback(err)
+						let user = (res.rows[0]) ? res.rows[0] : null
+						if (!user) return callback({ message: 'User not found.' })
+						callback(null, user)
+					})
+
+				},
+
+				/**
+				* validate password provider
+				**/
+
+				function (user, callback) {
+					comparePassword(password, user.password, (err, res) => {
+						if (err) return callback(err)
+						if (!res) return callback({ message: 'Email and password not match.' })
+						return callback(null, user)
+					})
+				}
+
+			], (err, user) => {
+
+				if (err) return done(err)
+				return done(null, user)
+
+			})
+
 	  	}
 	))
 
@@ -32,10 +65,12 @@ export default (passport) => {
 		jwtFromRequest: ExtractJwt.fromAuthHeader(),
 		secretOrKey: process.env.APP_SECRET,
 	}, (payload, done) => {
-			UserModel.findOne({ _id: payload._id }, (err, user) => {
+			let query = 'SELECT * FROM users WHERE id = ? LIMIT 1'
+			Cassandra.execute(query, [ payload.id ], [], (err, res) => {
 				if (err) return done(err)
-		      	if (!user) return done(null, false)
-		      	return done(null, user)
+				let user = res.rows[0]
+				if (!res) return done(null, false) 
+				return done(null, user)
 			})
 		}
 	))

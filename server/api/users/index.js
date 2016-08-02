@@ -1,4 +1,4 @@
-import UserModel from '../../models/user/mongodb/model'
+import UserModel from '../../models/user/cassandra/model'
 
 export default {
 	
@@ -10,24 +10,13 @@ export default {
 	**/
 
 	create: (req, res) => {
-		var params = req.body
-		UserModel.findOne({ email: params.email }, (err, user) => {
+
+		let params = req.body
+		UserModel.create(params, (err, token) => {
 			if (err) return res.status(401).send(err)
-			if (user) return res.status(403).send({ message: 'User already exists.' })
-
-			UserModel.create(params, (err, user) => {
-				if (err) return res.status(500).send(err)
-
-				user.generateJWT((err, token) => {
-					if (err) return res.status(500).send(err)
-					res.send({ token: token })
-				})
-			})
+			res.send({ token: token })
 		})
-	},
 
-	list: (req, res) => {
-		res.send('right')
-	}
+	},
 
 }

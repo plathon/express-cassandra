@@ -1,17 +1,17 @@
-import UserModel from '../../models/user/mongodb/model'
-import createOrUpdateUserOAuth from './algorithms/createOrUpdateUserOAuth'
+import UserModel from '../../models/user/cassandra/model'
+import jwt from '../../models/user/cassandra/helpers/jwt'
 
 export default {
 
 	/**
-	* description: authenticate user
+	* description: authenticate user with local credentials
 	* @param {string} email - user email
 	* @param {string} password - user password
 	**/
 
 	authenticate: (req, res) => {
 		let user = req.user
-		user.generateJWT((err, token) => {
+		jwt.generate(user, (err, token) => {
 			if (err) return res.status(401).send(err)
 			res.send({ token: token })
 		})
@@ -28,7 +28,7 @@ export default {
 		let email 	   = params.emails[0].value
 		let fullName   = `${params.name.givenName} ${params.name.familyName}`
 
-		createOrUpdateUserOAuth({
+		UserModel.createOrUpdateUserOAuth({
 			name: fullName,
 			email: email,
 			facebook: facebookId
@@ -52,7 +52,7 @@ export default {
 		let email    = params.emails[0].value
 		let fullName = params.displayName
 
-		createOrUpdateUserOAuth({
+		UserModel.createOrUpdateUserOAuth({
 			name: fullName,
 			email: email,
 			google: googleId

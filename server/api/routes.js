@@ -9,9 +9,8 @@ export default () => {
 
 	//users
 	routes.post('/users', users.create)
-	routes.get('/users', passport.authenticate('jwt', { session: false }), users.list)
 	//authetication
-	routes.post('/auth/auth', passport.authenticate('local'), authentication.authenticate)
+	routes.post('/auth', passport.authenticate('local'), authentication.authenticate)
 	//facebook oAuth 2.0
 	routes.get('/auth/facebook', passport.authenticate('facebook', { scope:['email'] }))
 	routes.get('/auth/facebook/callback', passport.authenticate('facebook'), authentication.facebook)
