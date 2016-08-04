@@ -1,4 +1,4 @@
-import UserModel from '../../models/user/cassandra/model'
+import UserModel from '../../models/user'
 import jwt from '../../models/user/cassandra/helpers/jwt'
 
 export default {
@@ -22,7 +22,6 @@ export default {
 	**/
 
 	facebook: (req, res) => {
-
 		let params 	   = req.user
 		let facebookId = params.id
 		let email 	   = params.emails[0].value
@@ -38,7 +37,6 @@ export default {
 			if (err) return res.status(401).send(err)
 			res.send(token)
 		})
-
 	},
 
 	/**
@@ -46,7 +44,6 @@ export default {
 	**/
 
 	google: (req, res) => {
-
 		let params 	 = req.user
 		let googleId = params.id
 		let email    = params.emails[0].value
@@ -62,7 +59,6 @@ export default {
 			if (err) return res.status(500).send(err)
 			res.send(token)
 		})
-
 	}
 
 }

@@ -9,6 +9,8 @@ export default () => {
 
 	//users
 	routes.post('/users', users.create)
+	routes.post('/users/password', users.resetPassword)
+	routes.put('/users/password', users.updatePassword)
 	//authetication
 	routes.post('/auth', passport.authenticate('local'), authentication.authenticate)
 	//facebook oAuth 2.0
